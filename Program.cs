@@ -4,6 +4,7 @@ using ApiAuth.Repositories;
 using ApiAuth.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +50,13 @@ app.MapPost("/login", (User model) =>
         token = token
     });
 });
+
+app.MapGet("/autenticado", (ClaimsPrincipal user) =>
+{
+    var mensagem = "Autenticado como " + user.Identity.Name;
+
+    return Results.Ok(mensagem);
+}).RequireAuthorization();
 
 app.MapGet("/", () => "Hello World!");
 
