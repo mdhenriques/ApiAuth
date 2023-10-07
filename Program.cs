@@ -60,6 +60,13 @@ app.MapGet("/autenticado", (ClaimsPrincipal user) =>
     return Results.Ok(mensagem);
 }).RequireAuthorization();
 
+app.MapGet("/saldo", (ClaimsPrincipal user) =>
+{
+    var mensagem = "Seu saldo é R$ 1.000.000.000.000.000,00";
+
+    return Results.Ok(mensagem);
+}).RequireAuthorization("Admin");
+
 app.MapGet("/", () => "Hello World!");
 
 app.Run();
