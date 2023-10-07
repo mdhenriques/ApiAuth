@@ -1,4 +1,7 @@
 using ApiAuth;
+using ApiAuth.Models;
+using ApiAuth.Repositories;
+using ApiAuth.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -30,6 +33,22 @@ var app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapPost("/login", (User model) =>
+{
+    var user = UserRepository.Get(model.Username, model.Password);
+
+    if (user == null)
+        return Results.NotFound(new { message = "Usuario ou senha invalidos" });
+
+    var token = TokenService.GenerateToken(user);
+
+    return Results.Ok(new
+    {
+        user = user,
+        token = token
+    });
+});
 
 app.MapGet("/", () => "Hello World!");
 
